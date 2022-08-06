@@ -1,27 +1,24 @@
 import Image from "next/image";
 import {
   Header as HeaderComponent,
-  Container,
   ActionIcon,
   Box,
   Text,
 } from "@mantine/core";
 import { Logout } from "tabler-icons-react";
+import { HeaderProps } from "types";
 
-interface Props {
-  logout: () => void;
-}
-
-export default function Header({ logout }: Props) {
+export default function Header({ logout }: HeaderProps) {
   return (
     <HeaderComponent height={60} mb={120}>
-      <Container
+      <Box
         sx={{
           display: "flex",
           justifyContent: "space-between",
           alignItems: "center",
           height: "100%",
         }}
+        mx="xl"
       >
         <Box
           sx={{
@@ -43,7 +40,7 @@ export default function Header({ logout }: Props) {
         <ActionIcon variant="outline" onClick={logout}>
           <Logout size={18} />
         </ActionIcon>
-      </Container>
+      </Box>
     </HeaderComponent>
   );
 }

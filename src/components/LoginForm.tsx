@@ -20,17 +20,9 @@ import {
 } from "@mantine/nprogress";
 import * as EmailValidator from "email-validator";
 import { login } from "api";
+import { LoginProps, LoginFormProps } from "types";
 
-export interface FormData {
-  email: string;
-  password: string;
-}
-
-interface Props {
-  login: (token: string) => void;
-}
-
-export default function LoginForm(props: Props) {
+export default function LoginForm(props: LoginFormProps) {
   const form = useForm({
     initialValues: {
       email: "",
@@ -50,7 +42,7 @@ export default function LoginForm(props: Props) {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
-  const handleSubmit = async (values: FormData) => {
+  const handleSubmit = async (values: LoginProps) => {
     resetNavigationProgress();
     startNavigationProgress();
     setLoading(true);
