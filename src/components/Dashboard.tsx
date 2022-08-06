@@ -1,6 +1,7 @@
+import { useState } from "react";
 import { AppShell, Box, Table, ActionIcon, Group } from "@mantine/core";
 import { Pencil, Trash } from "tabler-icons-react";
-import { Header } from "components";
+import { Header, SubstitutionModal } from "components";
 import { DashboardProps } from "types";
 
 const elements = [
@@ -79,11 +80,17 @@ const elements = [
 ];
 
 export default function Dashboard({ token, logout }: DashboardProps) {
+  const [modalOpened, setModalOpened] = useState(false);
+
   if (!token) return null;
 
-  const handleEditSubstitution = (id: number) => {};
+  const handleEditSubstitution = (id: number) => {
+    setModalOpened(true);
+  };
 
-  const handleDeleteSubstitution = (id: number) => {};
+  const handleDeleteSubstitution = (id: number) => {
+    setModalOpened(true);
+  };
 
   const rows = elements.map((element: any, index: number) => (
     <tr key={index}>
@@ -149,6 +156,12 @@ export default function Dashboard({ token, logout }: DashboardProps) {
           <tbody>{rows}</tbody>
         </Table>
       </Box>
+
+      <SubstitutionModal
+        opened={modalOpened}
+        onClose={() => setModalOpened(false)}
+        onSuccess={() => console.log("asd")}
+      />
     </AppShell>
   );
 }

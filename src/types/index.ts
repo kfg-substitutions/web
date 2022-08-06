@@ -18,14 +18,17 @@ export interface LoginFormProps {
 }
 
 export interface SubstitutionModalProps {
-  substitution: Substitution;
+  substitution?: Substitution;
+  opened: boolean;
+  onClose: () => void;
+  onSuccess: () => void;
 }
 
 /* Complex Data Structure Interfaces */
 export interface Substitution {
   substitutor: string;
   substituted: string;
-  hour: number;
+  hour: string;
   class: string;
   subject: string;
   room: string;

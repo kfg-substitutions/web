@@ -110,11 +110,9 @@ export default function LoginForm(props: LoginFormProps) {
               />
             </Stack>
 
-            <Group position="apart" mt="xl">
-              <Button type="submit" color="red">
-                Bejelentkezés
-              </Button>
-            </Group>
+            <Button type="submit" color="red" mt="xl">
+              Bejelentkezés
+            </Button>
 
             {error && (
               <Box pt="md">
