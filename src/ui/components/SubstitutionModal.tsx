@@ -16,21 +16,23 @@ import {
 } from "@mantine/nprogress";
 import { Substitution, SubstitutionModalProps } from "types";
 
+const initialValues = {
+  substitutor: "",
+  substituted: "",
+  hour: "",
+  class: "",
+  subject: "",
+  room: "",
+  note: "",
+};
+
 export default function SubstitutionModal({
   opened,
   onClose,
   onSuccess,
 }: SubstitutionModalProps) {
   const form = useForm({
-    initialValues: {
-      substitutor: "",
-      substituted: "",
-      hour: "",
-      class: "",
-      subject: "",
-      room: "",
-      note: "",
-    },
+    initialValues,
 
     validate: {
       substitutor: (val) => (!val ? "Kötelező megadni" : null),
@@ -49,7 +51,7 @@ export default function SubstitutionModal({
     startNavigationProgress();
     setLoading(true);
 
-    /*const result = /*await login({
+    /*const result = await login({
       email: values.email,
       password: values.password,
     }); { success: true, error: "no" };
@@ -57,9 +59,9 @@ export default function SubstitutionModal({
     setLoading(false);
     setNavigationProgress(100);
 
-    if (!result.success) return setError(result.error);
+    if (!result.success) return setError(result.error);*/
 
-    onSuccess();*/
+    onSuccess();
   };
 
   return (

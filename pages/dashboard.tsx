@@ -1,11 +1,15 @@
-import { useState } from "react";
-import { AppShell, Box, Table, ActionIcon, Group } from "@mantine/core";
+import { useEffect, useState } from "react";
+import { useRouter } from "next/router";
+import { AppShell, Box, Table, ActionIcon } from "@mantine/core";
 import { Pencil, Trash } from "tabler-icons-react";
+import { Substitution } from "types";
 import { Header, SubstitutionModal } from "ui";
-import { DashboardProps } from "types";
+import { useAuthentication } from "util/authentication";
+import * as API from "api";
 
 const elements = [
   {
+    id: 1,
     substitutor: "A",
     substituted: "B",
     hour: "1.",
@@ -15,6 +19,7 @@ const elements = [
     note: "megjegyzés",
   },
   {
+    id: 2,
     substitutor: "A",
     substituted: "B",
     hour: "1.",
@@ -24,6 +29,7 @@ const elements = [
     note: "megjegyzés",
   },
   {
+    id: 3,
     substitutor: "A",
     substituted: "B",
     hour: "1.",
@@ -33,6 +39,7 @@ const elements = [
     note: "megjegyzés",
   },
   {
+    id: 4,
     substitutor: "A",
     substituted: "B",
     hour: "1.",
@@ -42,6 +49,7 @@ const elements = [
     note: "megjegyzés",
   },
   {
+    id: 5,
     substitutor: "A",
     substituted: "B",
     hour: "1.",
@@ -51,6 +59,7 @@ const elements = [
     note: "megjegyzés",
   },
   {
+    id: 6,
     substitutor: "A",
     substituted: "B",
     hour: "1.",
@@ -60,6 +69,7 @@ const elements = [
     note: "megjegyzés",
   },
   {
+    id: 7,
     substitutor: "A",
     substituted: "B",
     hour: "1.",
@@ -69,6 +79,7 @@ const elements = [
     note: "megjegyzés",
   },
   {
+    id: 8,
     substitutor: "A",
     substituted: "B",
     hour: "1.",
@@ -79,10 +90,10 @@ const elements = [
   },
 ];
 
-export default function Dashboard({ token, logout }: DashboardProps) {
+export default function Dashboard() {
+  const router = useRouter();
+  const { authenticationToken, logout } = useAuthentication();
   const [modalOpened, setModalOpened] = useState(false);
-
-  if (!token) return null;
 
   const handleEditSubstitution = (id: number) => {
     setModalOpened(true);
@@ -92,7 +103,11 @@ export default function Dashboard({ token, logout }: DashboardProps) {
     setModalOpened(true);
   };
 
-  const rows = elements.map((element: any, index: number) => (
+  useEffect(() => {
+    if (!authenticationToken) router.push("/login");
+  }, [authenticationToken, router]);
+
+  const rows = elements.map((element: Substitution, index: number) => (
     <tr key={index}>
       <td>{element.substitutor}</td>
       <td>{element.substituted}</td>
@@ -165,3 +180,11 @@ export default function Dashboard({ token, logout }: DashboardProps) {
     </AppShell>
   );
 }
+
+/*export function getServerSideProps() {
+  return {
+    props: {
+      token: "asd",
+    },
+  };
+}*/

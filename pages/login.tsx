@@ -1,11 +1,11 @@
-import { useState } from "react";
+import { useRouter } from "next/router";
+import { useState, useEffect } from "react";
 import { useForm } from "@mantine/form";
 import {
   TextInput,
   PasswordInput,
   Text,
   Paper,
-  Group,
   Button,
   Box,
   Stack,
@@ -19,15 +19,21 @@ import {
   startNavigationProgress,
 } from "@mantine/nprogress";
 import * as EmailValidator from "email-validator";
-import { login } from "api";
-import { LoginProps, LoginFormProps } from "types";
+import * as API from "api";
+import { LoginProps } from "types";
+import { useAuthentication } from "util/authentication";
 
-export default function LoginForm(props: LoginFormProps) {
+const initialValues = {
+  email: "",
+  password: "",
+};
+
+export default function Login() {
+  const router = useRouter();
+  const { authenticationToken, login } = useAuthentication();
+
   const form = useForm({
-    initialValues: {
-      email: "",
-      password: "",
-    },
+    initialValues,
 
     validate: {
       email: (val) =>
@@ -47,7 +53,7 @@ export default function LoginForm(props: LoginFormProps) {
     startNavigationProgress();
     setLoading(true);
 
-    const result = await login({
+    const result = await API.login({
       email: values.email,
       password: values.password,
     });
@@ -57,8 +63,12 @@ export default function LoginForm(props: LoginFormProps) {
 
     if (!result.success) return setError(result.error);
 
-    props.login(result.token);
+    login(result.token);
   };
+
+  useEffect(() => {
+    if (authenticationToken) router.push("/dashboard");
+  }, [authenticationToken, router]);
 
   return (
     <Box

@@ -26,6 +26,7 @@ export interface SubstitutionModalProps {
 
 /* Complex Data Structure Interfaces */
 export interface Substitution {
+  id?: number;
   substitutor: string;
   substituted: string;
   hour: string;
