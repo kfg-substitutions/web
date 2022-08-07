@@ -3,7 +3,7 @@ import type { NextPage } from "next";
 import { useEffect, useState } from "react";
 import Head from "next/head";
 
-import { Dashboard, LoginForm } from "components";
+import { Dashboard, LoginForm } from "ui";
 
 type Token = string | null;
 

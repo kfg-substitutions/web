@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { AppShell, Box, Table, ActionIcon, Group } from "@mantine/core";
 import { Pencil, Trash } from "tabler-icons-react";
-import { Header, SubstitutionModal } from "components";
+import { Header, SubstitutionModal } from "ui";
 import { DashboardProps } from "types";
 
 const elements = [
