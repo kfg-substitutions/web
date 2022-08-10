@@ -2,8 +2,15 @@
 const nextConfig = {
   reactStrictMode: true,
   swcMinify: true,
-  images: {
-    domains: ["www.karinthy.hu"],
+
+  async redirects() {
+    return [
+      {
+        source: "/admin",
+        destination: "/dashboard",
+        permanent: true,
+      },
+    ];
   },
 };
 

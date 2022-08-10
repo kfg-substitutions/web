@@ -27,11 +27,7 @@ export default function Header({ logout }: HeaderProps) {
             alignItems: "center",
           }}
         >
-          <Image
-            src="https://www.karinthy.hu/web/kepek/logo.png"
-            width={32}
-            height={32}
-          />
+          <Image src="/logo.png" width={32} height={32} />
           <Text weight={700} ml={10}>
             Helyettesítések
           </Text>
