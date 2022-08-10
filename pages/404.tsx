@@ -70,7 +70,11 @@ export default function Page404() {
           cols={2}
           breakpoints={[{ maxWidth: "sm", cols: 1, spacing: 40 }]}
         >
-          <Image src="/404.svg" className={classes.mobileImage} />
+          <Image
+            alt="404 error"
+            src="/404.svg"
+            className={classes.mobileImage}
+          />
           <div>
             <Title className={classes.title}>Valami nem stimmel...</Title>
             <Text color="dimmed" size="lg">
@@ -89,7 +93,11 @@ export default function Page404() {
               </Button>
             </Link>
           </div>
-          <Image src="/404.svg" className={classes.desktopImage} />
+          <Image
+            alt="404 text"
+            src="/404.svg"
+            className={classes.desktopImage}
+          />
         </SimpleGrid>
       </Container>
     </Box>

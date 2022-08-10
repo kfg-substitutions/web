@@ -27,7 +27,7 @@ export default function Header({ logout }: HeaderProps) {
             alignItems: "center",
           }}
         >
-          <Image src="/logo.png" width={32} height={32} />
+          <Image alt="school logo" src="/logo.png" width={32} height={32} />
           <Text weight={700} ml={10}>
             Helyettesítések
           </Text>
