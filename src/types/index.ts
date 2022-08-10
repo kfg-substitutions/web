@@ -5,16 +5,13 @@ export interface LoginProps {
 }
 
 export interface DashboardProps {
-  token: string | undefined;
-  logout: () => void;
+  todaySubstitutions: Substitution[];
+  tomorrowSubstitutions: Substitution[];
+  error?: string;
 }
 
 export interface HeaderProps {
   logout: () => void;
-}
-
-export interface LoginFormProps {
-  login: (token: string) => void;
 }
 
 export interface SubstitutionModalProps {
@@ -35,3 +32,5 @@ export interface Substitution {
   room: string;
   note?: string;
 }
+
+export type Day = "today" | "tomorrow";

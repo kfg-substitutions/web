@@ -1,6 +1,6 @@
 import type { NextApiRequest, NextApiResponse } from "next";
-import { Substitution } from "types";
 import { todaySubstitutions, tomorrowSubstitutions } from "util/substitutions";
+import { Substitution } from "types";
 
 type ResponseData = {
   success: boolean;
@@ -14,11 +14,9 @@ export default function handler(
   req: NextApiRequest,
   res: NextApiResponse<ResponseData>
 ) {
-  res
-    .status(200)
-    .json({
-      success: true,
-      todaySubstitutions: todaySubstitutions.get(),
-      tomorrowSubstitutions: tomorrowSubstitutions.get(),
-    });
+  res.status(200).json({
+    success: true,
+    todaySubstitutions: todaySubstitutions.get(),
+    tomorrowSubstitutions: tomorrowSubstitutions.get(),
+  });
 }

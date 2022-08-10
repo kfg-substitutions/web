@@ -29,9 +29,6 @@ export default function handler(
       error: ERROR_CODES.MISSING_CREDENTIALS,
     });
 
-  console.log(LOGIN_CONFIG.email, LOGIN_CONFIG.password);
-  console.log(req.body.email, req.body.password);
-
   if (
     req.body.email !== LOGIN_CONFIG.email ||
     req.body.password !== LOGIN_CONFIG.password

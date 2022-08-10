@@ -1,105 +1,28 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
-import { AppShell, Box, Table, ActionIcon } from "@mantine/core";
+import { AppShell, Box, Table, ActionIcon, Alert, Radio } from "@mantine/core";
+import { useToggle } from "@mantine/hooks";
 import { Pencil, Trash } from "tabler-icons-react";
-import { Substitution } from "types";
+import { Substitution, DashboardProps, Day } from "types";
 import { Header, SubstitutionModal } from "ui";
 import { useAuthentication } from "util/authentication";
 import * as API from "api";
 
-const elements = [
-  {
-    id: 1,
-    substitutor: "A",
-    substituted: "B",
-    hour: "1.",
-    class: "9.EK",
-    subject: "Matek",
-    room: "106",
-    note: "megjegyzés",
-  },
-  {
-    id: 2,
-    substitutor: "A",
-    substituted: "B",
-    hour: "1.",
-    class: "9.EK",
-    subject: "Matek",
-    room: "106",
-    note: "megjegyzés",
-  },
-  {
-    id: 3,
-    substitutor: "A",
-    substituted: "B",
-    hour: "1.",
-    class: "9.EK",
-    subject: "Matek",
-    room: "106",
-    note: "megjegyzés",
-  },
-  {
-    id: 4,
-    substitutor: "A",
-    substituted: "B",
-    hour: "1.",
-    class: "9.EK",
-    subject: "Matek",
-    room: "106",
-    note: "megjegyzés",
-  },
-  {
-    id: 5,
-    substitutor: "A",
-    substituted: "B",
-    hour: "1.",
-    class: "9.EK",
-    subject: "Matek",
-    room: "106",
-    note: "megjegyzés",
-  },
-  {
-    id: 6,
-    substitutor: "A",
-    substituted: "B",
-    hour: "1.",
-    class: "9.EK",
-    subject: "Matek",
-    room: "106",
-    note: "megjegyzés",
-  },
-  {
-    id: 7,
-    substitutor: "A",
-    substituted: "B",
-    hour: "1.",
-    class: "9.EK",
-    subject: "Matek",
-    room: "106",
-    note: "megjegyzés",
-  },
-  {
-    id: 8,
-    substitutor: "A",
-    substituted: "B",
-    hour: "1.",
-    class: "9.EK",
-    subject: "Matek",
-    room: "106",
-    note: "megjegyzés",
-  },
-];
-
-export default function Dashboard() {
+export default function Dashboard({
+  todaySubstitutions,
+  tomorrowSubstitutions,
+  error,
+}: DashboardProps) {
   const router = useRouter();
   const { authenticationToken, logout } = useAuthentication();
+  const [day, toggleDay] = useToggle<Day>(["today", "tomorrow"]);
   const [modalOpened, setModalOpened] = useState(false);
 
-  const handleEditSubstitution = (id: number) => {
+  const handleEditSubstitution = (day: Day, id?: number) => {
     setModalOpened(true);
   };
 
-  const handleDeleteSubstitution = (id: number) => {
+  const handleDeleteSubstitution = (day: Day, id?: number) => {
     setModalOpened(true);
   };
 
@@ -107,22 +30,24 @@ export default function Dashboard() {
     if (!authenticationToken) router.push("/login");
   }, [authenticationToken, router]);
 
-  const rows = elements.map((element: Substitution, index: number) => (
+  const rows = (
+    day === "today" ? todaySubstitutions : tomorrowSubstitutions
+  ).map((substitution: Substitution, index: number) => (
     <tr key={index}>
-      <td>{element.substitutor}</td>
-      <td>{element.substituted}</td>
-      <td>{element.hour}</td>
-      <td>{element.class}</td>
-      <td>{element.subject}</td>
-      <td>{element.room}</td>
-      <td>{element.note}</td>
+      <td>{substitution.substitutor}</td>
+      <td>{substitution.substituted}</td>
+      <td>{substitution.hour}</td>
+      <td>{substitution.class}</td>
+      <td>{substitution.subject}</td>
+      <td>{substitution.room}</td>
+      <td>{substitution.note}</td>
       <td>
         <Box sx={{ display: "flex", flexDirection: "row" }}>
           <ActionIcon
             variant="outline"
             color="orange"
             mr={5}
-            onClick={() => handleEditSubstitution(index)}
+            onClick={() => handleEditSubstitution(day, substitution.id)}
           >
             <Pencil size={18} />
           </ActionIcon>
@@ -130,7 +55,7 @@ export default function Dashboard() {
             variant="outline"
             color="red"
             ml={5}
-            onClick={() => handleDeleteSubstitution(index)}
+            onClick={() => handleDeleteSubstitution(day, substitution.id)}
           >
             <Trash size={18} />
           </ActionIcon>
@@ -150,6 +75,44 @@ export default function Dashboard() {
       })}
     >
       <Box px="xl">
+        {error && (
+          <Box pt="md">
+            <Alert
+              title="Sikertelen bejelentkezés"
+              color="red"
+              variant="outline"
+            >
+              {error}
+            </Alert>
+          </Box>
+        )}
+
+        <Box
+          sx={{
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+            height: "100%",
+          }}
+        >
+          <Radio
+            value="today"
+            checked={day === "today"}
+            label="Mai helyettesítések"
+            size="md"
+            color="red"
+            onChange={() => toggleDay()}
+          />
+          <Radio
+            value="tomorrow"
+            checked={day === "tomorrow"}
+            label="Holnapi helyettesítések"
+            size="md"
+            color="red"
+            onChange={() => toggleDay()}
+          />
+        </Box>
+
         <Table
           highlightOnHover
           striped
@@ -181,10 +144,14 @@ export default function Dashboard() {
   );
 }
 
-/*export function getServerSideProps() {
+export async function getServerSideProps() {
+  const result = await API.getSubstitutions();
+
   return {
     props: {
-      token: "asd",
+      todaySubstitutions: result.success ? result.todaySubstitutions : [],
+      tomorrowSubstitutions: result.success ? result.tomorrowSubstitutions : [],
+      error: !result.success && result.error,
     },
   };
-}*/
+}

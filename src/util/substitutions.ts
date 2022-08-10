@@ -16,6 +16,7 @@ class Substitutions {
 
     return {
       success: true,
+      message: "Sikeres hozzáadás!",
     };
   }
 
@@ -34,6 +35,7 @@ class Substitutions {
 
     return {
       success: true,
+      message: "Sikeres módosítás!",
     };
   }
 
@@ -52,6 +54,7 @@ class Substitutions {
 
     return {
       success: true,
+      message: "Sikeres törlés!",
     };
   }
 }
