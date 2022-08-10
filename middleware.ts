@@ -20,6 +20,7 @@ export async function middleware(req: NextRequest) {
     // TODO X-Auth-Token validation
     // https://blog.tericcabrel.com/protect-your-api-routes-in-next-js-with-middleware/
     // https://github.com/tericcabrel/blog-tutorials/blob/main/next-api-middleware/middleware.ts
+    // test push
   }
 
   return NextResponse.next();
