@@ -25,7 +25,7 @@ jobs:
           heroku_email: ${{secrets.HEROKU_EMAIL}}
           branch: main
         env:
-          HD_STAGE: ${{secrets.ENV_STAGE}}
+          HD_STAGE: "LIVE"
           HD_API_BASE_URL: ${{secrets.ENV_API_BASE_URL}}
           HD_ADMIN_LOGIN_EMAIL: ${{secrets.ENV_ADMIN_LOGIN_EMAIL}}
           HD_ADMIN_LOGIN_PASSWORD: ${{secrets.ENV_ADMIN_LOGIN_PASSWORD}}
