@@ -58,12 +58,10 @@ export default function Login() {
       password: values.password,
     });
 
+    result.success ? login(result.token) : setError(result.error);
+
     setLoading(false);
     setNavigationProgress(100);
-
-    if (!result.success) return setError(result.error);
-
-    login(result.token);
   };
 
   useEffect(() => {

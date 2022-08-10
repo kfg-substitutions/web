@@ -1,5 +1,7 @@
 import { Instance } from "api";
 
 export default async function getSubstitutions() {
-  return Instance.get("/public/get_substitutions").then((res) => res.data);
+  return Instance.get("/public/get_substitutions")
+    .then((res) => res.data)
+    .catch((err) => err.response.data);
 }

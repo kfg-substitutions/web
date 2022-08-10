@@ -8,7 +8,7 @@ type ResponseData = {
 };
 
 const LOGIN_CONFIG = {
-  username: process.env.ADMIN_LOGIN_USERNAME,
+  email: process.env.ADMIN_LOGIN_EMAIL,
   password: process.env.ADMIN_LOGIN_PASSWORD,
   token: process.env.ADMIN_LOGIN_TOKEN,
 };
@@ -23,14 +23,17 @@ export default function handler(
       error: ERROR_CODES.WRONG_METHOD,
     });
 
-  if (!req.body.username || !req.body.password)
+  if (!req.body.email || !req.body.password)
     return res.status(400).json({
       success: false,
       error: ERROR_CODES.MISSING_CREDENTIALS,
     });
 
+  console.log(LOGIN_CONFIG.email, LOGIN_CONFIG.password);
+  console.log(req.body.email, req.body.password);
+
   if (
-    req.body.username !== LOGIN_CONFIG.username ||
+    req.body.email !== LOGIN_CONFIG.email ||
     req.body.password !== LOGIN_CONFIG.password
   )
     return res.status(401).json({
