@@ -1,6 +1,5 @@
 import { useState } from "react";
 import {
-  Modal,
   TextInput,
   Button,
   Box,
@@ -9,30 +8,30 @@ import {
   LoadingOverlay,
 } from "@mantine/core";
 import { useForm } from "@mantine/form";
+import { closeAllModals } from "@mantine/modals";
 import {
   resetNavigationProgress,
   setNavigationProgress,
   startNavigationProgress,
 } from "@mantine/nprogress";
-import { Substitution, SubstitutionModalProps } from "types";
+import { Substitution, SubstitutionFormProps } from "types";
 
-const initialValues = {
-  substitutor: "",
-  substituted: "",
-  hour: "",
-  class: "",
-  subject: "",
-  room: "",
-  note: "",
-};
+const getInitialValues = (substitution?: Substitution) => ({
+  substitutor: substitution?.substitutor || "",
+  substituted: substitution?.substituted || "",
+  hour: substitution?.hour || "",
+  class: substitution?.class || "",
+  subject: substitution?.subject || "",
+  room: substitution?.room || "",
+  note: substitution?.note || "",
+});
 
-export default function SubstitutionModal({
-  opened,
-  onClose,
-  onSuccess,
-}: SubstitutionModalProps) {
+export default function SubstitutionForm(props: SubstitutionFormProps) {
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | undefined>();
+
   const form = useForm({
-    initialValues,
+    initialValues: getInitialValues(props.substitution),
 
     validate: {
       substitutor: (val) => (!val ? "Kötelező megadni" : null),
@@ -43,37 +42,34 @@ export default function SubstitutionModal({
       room: (val) => (!val ? "Kötelező megadni" : null),
     },
   });
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState("");
 
-  const handleSubmit = async (values: Substitution) => {
+  const handleSubmit = (substitution: Substitution) => {
     resetNavigationProgress();
     startNavigationProgress();
     setLoading(true);
 
-    /*const result = await login({
-      email: values.email,
-      password: values.password,
-    }); { success: true, error: "no" };
+    const result = props.onSubmit({
+      id: props.substitution?.id,
+      ...substitution,
+    });
 
-    setLoading(false);
+    Promise.resolve(result).then((result) => {
+      if (!result.success) return setError(result.error);
+
+      closeAllModals();
+    });
+
     setNavigationProgress(100);
-
-    if (!result.success) return setError(result.error);*/
-
-    onSuccess();
+    setLoading(false);
   };
 
   return (
-    <Modal
-      opened={opened}
-      onClose={onClose}
-      centered
-      title="This is fullscreen modal!"
-    >
+    <>
       <LoadingOverlay visible={loading} overlayBlur={2} />
 
-      <form onSubmit={form.onSubmit((values) => handleSubmit(values))}>
+      <form
+        onSubmit={form.onSubmit((substitution) => handleSubmit(substitution))}
+      >
         <Stack>
           <TextInput
             required
@@ -168,6 +164,6 @@ export default function SubstitutionModal({
           </Box>
         )}
       </form>
-    </Modal>
+    </>
   );
 }

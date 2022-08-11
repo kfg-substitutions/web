@@ -2,6 +2,7 @@ import Head from "next/head";
 import type { AppProps } from "next/app";
 import { MantineProvider } from "@mantine/core";
 import { NavigationProgress } from "@mantine/nprogress";
+import { ModalsProvider } from "@mantine/modals";
 import { AuthenticationProvider } from "util/authentication";
 
 function Application({ Component, pageProps }: AppProps) {
@@ -21,11 +22,13 @@ function Application({ Component, pageProps }: AppProps) {
         withNormalizeCSS
         theme={{ colorScheme: "dark" }}
       >
-        <NavigationProgress color="red" />
+        <ModalsProvider>
+          <NavigationProgress color="red" />
 
-        <AuthenticationProvider>
-          <Component {...pageProps} />
-        </AuthenticationProvider>
+          <AuthenticationProvider>
+            <Component {...pageProps} />
+          </AuthenticationProvider>
+        </ModalsProvider>
       </MantineProvider>
     </>
   );

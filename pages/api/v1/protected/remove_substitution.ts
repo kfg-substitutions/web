@@ -29,7 +29,7 @@ export default function handler(
   const id = req.body.id as number;
 
   const result =
-    day === "today"
+    day === Day.Today
       ? todaySubstitutions.remove(id)
       : tomorrowSubstitutions.remove(id);
 

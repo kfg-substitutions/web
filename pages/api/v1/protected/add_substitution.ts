@@ -29,7 +29,7 @@ export default function handler(
   const substitution = req.body.substitution as Substitution;
 
   const result =
-    day === "today"
+    day === Day.Today
       ? todaySubstitutions.add(substitution)
       : tomorrowSubstitutions.add(substitution);
 

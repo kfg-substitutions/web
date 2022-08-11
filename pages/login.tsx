@@ -60,8 +60,8 @@ export default function Login() {
 
     result.success ? login(result.token) : setError(result.error);
 
-    setLoading(false);
     setNavigationProgress(100);
+    setLoading(false);
   };
 
   useEffect(() => {

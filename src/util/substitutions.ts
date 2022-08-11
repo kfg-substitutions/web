@@ -74,7 +74,7 @@ let todaySubstitutions = new Substitutions([
     id: 2,
     substitutor: "A",
     substituted: "B",
-    hour: "1.",
+    hour: "2.",
     class: "9.EK",
     subject: "Matek",
     room: "106",

@@ -1,24 +1,17 @@
 /* Component Prop Interfaces */
-export interface LoginProps {
-  email: string;
-  password: string;
-}
-
 export interface DashboardProps {
   todaySubstitutions: Substitution[];
   tomorrowSubstitutions: Substitution[];
-  error?: string;
+  err?: string;
 }
 
 export interface HeaderProps {
   logout: () => void;
 }
 
-export interface SubstitutionModalProps {
+export interface SubstitutionFormProps {
   substitution?: Substitution;
-  opened: boolean;
-  onClose: () => void;
-  onSuccess: () => void;
+  onSubmit: (substitution: Substitution) => Promise<APICallResponse>;
 }
 
 /* Complex Data Structure Interfaces */
@@ -33,4 +26,39 @@ export interface Substitution {
   note?: string;
 }
 
-export type Day = "today" | "tomorrow";
+export enum Day {
+  Today = "today",
+  Tomorrow = "tomorrow",
+}
+
+/* API Call Interfaces */
+interface ProtectedRouteProps {
+  token: string;
+}
+
+export interface LoginProps {
+  email: string;
+  password: string;
+}
+
+export interface AddSubstitutionProps extends ProtectedRouteProps {
+  day: Day;
+  substitution: Substitution;
+}
+
+export interface EditSubstitutionProps extends ProtectedRouteProps {
+  day: Day;
+  id: number;
+  substitution: Substitution;
+}
+
+export interface RemoveSubstitutionProps extends ProtectedRouteProps {
+  day: Day;
+  id: number;
+}
+
+export interface APICallResponse {
+  success: boolean;
+  message?: string;
+  error?: string;
+}

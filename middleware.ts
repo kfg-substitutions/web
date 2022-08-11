@@ -14,13 +14,6 @@ export async function middleware(req: NextRequest) {
       return NextResponse.redirect(
         new URL("/api/v1/auth/unauthorized", req.url)
       );
-
-    return NextResponse.next();
-
-    // TODO X-Auth-Token validation
-    // https://blog.tericcabrel.com/protect-your-api-routes-in-next-js-with-middleware/
-    // https://github.com/tericcabrel/blog-tutorials/blob/main/next-api-middleware/middleware.ts
-    // test push
   }
 
   return NextResponse.next();
