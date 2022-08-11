@@ -7,7 +7,7 @@ export default async function removeSubstitution({
   id,
 }: RemoveSubstitutionProps) {
   return Instance.post(
-    "/protected/edit_substitution",
+    "/protected/remove_substitution",
     { day, id },
     { headers: { "X-Auth-Token": token } }
   )

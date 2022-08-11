@@ -149,16 +149,12 @@ export default function SubstitutionForm(props: SubstitutionFormProps) {
         </Stack>
 
         <Button type="submit" color="red" mt="xl">
-          Bejelentkezés
+          Küldés
         </Button>
 
         {error && (
           <Box pt="md">
-            <Alert
-              title="Sikertelen bejelentkezés"
-              color="red"
-              variant="outline"
-            >
+            <Alert title="Hiba történt" color="red" variant="outline">
               {error}
             </Alert>
           </Box>

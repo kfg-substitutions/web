@@ -17,15 +17,18 @@ import { Header, SubstitutionForm } from "ui";
 import { useAuthentication } from "util/authentication";
 import * as API from "api";
 
-export default function Dashboard({
-  todaySubstitutions,
-  tomorrowSubstitutions,
-  err,
-}: DashboardProps) {
+export default function Dashboard(props: DashboardProps) {
+  const [todaySubstitutions, setTodaySubstitutions] = useState(
+    props.todaySubstitutions
+  );
+  const [tomorrowSubstitutions, setTomorrowSubstitutions] = useState(
+    props.tomorrowSubstitutions
+  );
+
   const router = useRouter();
   const { authenticationToken, logout } = useAuthentication();
   const [day, toggleDay] = useToggle<Day>([Day.Today, Day.Tomorrow]);
-  const [error, _] = useState<string | undefined>(err);
+  const [error, setError] = useState<string | undefined>(props.err);
 
   const displayNoSubstitutions =
     (day === Day.Today && todaySubstitutions.length <= 0) ||
@@ -57,6 +60,20 @@ export default function Dashboard({
       substitution,
     });
 
+    if (result.success) {
+      day === Day.Today
+        ? setTodaySubstitutions(
+            todaySubstitutions.map((substitution) =>
+              substitution.id === id ? editedSubstitution : substitution
+            )
+          )
+        : setTomorrowSubstitutions(
+            tomorrowSubstitutions.map((substitution) =>
+              substitution.id === id ? editedSubstitution : substitution
+            )
+          );
+    }
+
     return result;
   };
 
@@ -71,11 +88,29 @@ export default function Dashboard({
         </Text>
       ),
       labels: { confirm: "Törlés", cancel: "Mégsem" },
-      onConfirm: () => submitDeleteSubstitution(substitution),
+      onConfirm: () => submitDeleteSubstitution(substitution.id),
     });
   };
 
-  const submitDeleteSubstitution = (substitution: Substitution) => {};
+  const submitDeleteSubstitution = async (id: number | undefined) => {
+    if (!id) return;
+
+    const result = await API.removeSubstitution({
+      token: authenticationToken,
+      day,
+      id,
+    });
+
+    if (!result.success) return setError(result.error);
+
+    day === Day.Today
+      ? setTodaySubstitutions(
+          todaySubstitutions.filter((substitution) => substitution.id !== id)
+        )
+      : setTomorrowSubstitutions(
+          tomorrowSubstitutions.filter((substitution) => substitution.id !== id)
+        );
+  };
 
   useEffect(() => {
     if (!authenticationToken) router.push("/login");
