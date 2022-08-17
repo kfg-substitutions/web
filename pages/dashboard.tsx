@@ -34,6 +34,37 @@ export default function Dashboard(props: DashboardProps) {
     (day === Day.Today && todaySubstitutions.length <= 0) ||
     (day === Day.Tomorrow && tomorrowSubstitutions.length <= 0);
 
+  const handleAddSubstitution = () => {
+    openModal({
+      title: "Helyettesítés hozzáadása",
+      children: (
+        <SubstitutionForm
+          onSubmit={(substitution: Substitution) =>
+            submitAddSubstitution(substitution)
+          }
+        />
+      ),
+    });
+  };
+
+  const submitAddSubstitution = async (substitution: Substitution) => {
+    const result = await API.addSubstitution({
+      token: authenticationToken,
+      day,
+      substitution,
+    });
+
+    if (result.success) {
+      const newSubstitution = { id: result.id, ...substitution };
+
+      day === Day.Today
+        ? setTodaySubstitutions([...todaySubstitutions, newSubstitution])
+        : setTomorrowSubstitutions([...tomorrowSubstitutions, newSubstitution]);
+    }
+
+    return result;
+  };
+
   const handleEditSubstitution = (substitution: Substitution) => {
     if (!substitution) return;
 
@@ -153,7 +184,9 @@ export default function Dashboard(props: DashboardProps) {
   return (
     <AppShell
       padding="md"
-      header={<Header logout={logout} />}
+      header={
+        <Header logout={logout} addSubstitution={handleAddSubstitution} />
+      }
       styles={(theme) => ({
         main: {
           backgroundColor: theme.colors.dark[8],

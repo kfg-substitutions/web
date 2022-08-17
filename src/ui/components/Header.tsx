@@ -4,11 +4,12 @@ import {
   ActionIcon,
   Box,
   Text,
+  Group,
 } from "@mantine/core";
-import { Logout } from "tabler-icons-react";
+import { Logout, Plus } from "tabler-icons-react";
 import { HeaderProps } from "types";
 
-export default function Header({ logout }: HeaderProps) {
+export default function Header({ logout, addSubstitution }: HeaderProps) {
   return (
     <HeaderComponent height={60} mb={120}>
       <Box
@@ -33,9 +34,15 @@ export default function Header({ logout }: HeaderProps) {
           </Text>
         </Box>
 
-        <ActionIcon variant="outline" onClick={logout}>
-          <Logout size={18} />
-        </ActionIcon>
+        <Group spacing="xs">
+          <ActionIcon variant="outline" onClick={addSubstitution}>
+            <Plus size={18} />
+          </ActionIcon>
+
+          <ActionIcon variant="outline" onClick={logout}>
+            <Logout size={18} />
+          </ActionIcon>
+        </Group>
       </Box>
     </HeaderComponent>
   );

@@ -1,5 +1,7 @@
 import { Substitution } from "types";
 
+// TODO save substitutions to file instead of memory
+
 class Substitutions {
   substitutions: Substitution[];
 
@@ -12,11 +14,20 @@ class Substitutions {
   }
 
   add(substitution: Substitution) {
-    this.substitutions.push(substitution);
+    // TODO real ID generation
+    const id = Math.floor(Math.random() * 10000) + 5;
+
+    const substitutionWithID = {
+      id,
+      ...substitution,
+    };
+
+    this.substitutions.push(substitutionWithID);
 
     return {
       success: true,
       message: "Sikeres hozzáadás!",
+      id,
     };
   }
 
@@ -31,7 +42,12 @@ class Substitutions {
       (substitution) => substitution.id === id
     );
 
-    this.substitutions[index] = newSubstitution;
+    const substitutionWithID = {
+      id: this.substitutions[index].id,
+      ...newSubstitution,
+    };
+
+    this.substitutions[index] = substitutionWithID;
 
     return {
       success: true,
@@ -46,11 +62,9 @@ class Substitutions {
         error: "Helyettesítés ezzel az azonosítóval nem létezik.",
       };
 
-    const index = this.substitutions.findIndex(
-      (substitution) => substitution.id === id
+    this.substitutions = this.substitutions.filter(
+      (substitution) => substitution.id !== id
     );
-
-    this.substitutions.splice(index, 1);
 
     return {
       success: true,

@@ -7,6 +7,7 @@ export interface DashboardProps {
 
 export interface HeaderProps {
   logout: () => void;
+  addSubstitution: () => void;
 }
 
 export interface SubstitutionFormProps {
