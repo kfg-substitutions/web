@@ -17,7 +17,8 @@ export interface SubstitutionFormProps {
 
 /* Complex Data Structure Interfaces */
 export interface Substitution {
-  id?: number;
+  id?: string;
+  day: Day;
   substitutor: string;
   substituted: string;
   hour: string;
@@ -43,23 +44,21 @@ export interface LoginProps {
 }
 
 export interface AddSubstitutionProps extends ProtectedRouteProps {
-  day: Day;
   substitution: Substitution;
 }
 
 export interface EditSubstitutionProps extends ProtectedRouteProps {
-  day: Day;
-  id: number;
+  id: string;
   substitution: Substitution;
 }
 
 export interface RemoveSubstitutionProps extends ProtectedRouteProps {
-  day: Day;
-  id: number;
+  id: string;
 }
 
 export interface APICallResponse {
   success: boolean;
   message?: string;
   error?: string;
+  id?: string;
 }

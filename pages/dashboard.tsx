@@ -48,10 +48,14 @@ export default function Dashboard(props: DashboardProps) {
   };
 
   const submitAddSubstitution = async (substitution: Substitution) => {
+    const substitutionWithDay = {
+      ...substitution,
+      day: day,
+    };
+
     const result = await API.addSubstitution({
       token: authenticationToken,
-      day,
-      substitution,
+      substitution: substitutionWithDay,
     });
 
     if (result.success) {
@@ -74,19 +78,23 @@ export default function Dashboard(props: DashboardProps) {
         <SubstitutionForm
           substitution={substitution}
           onSubmit={(substitution: Substitution) =>
-            submitEditSubstitution(substitution)
+            submitEditSubstitution(substitution.id!, substitution)
           }
         />
       ),
     });
   };
 
-  const submitEditSubstitution = async (editedSubstitution: Substitution) => {
-    const { id, ...substitution } = editedSubstitution;
+  const submitEditSubstitution = async (
+    id: string,
+    editedSubstitution: Substitution
+  ) => {
+    const { /*id, */ ...substitution } = editedSubstitution;
+
+    console.log(id, ":", substitution);
 
     const result = await API.editSubstitution({
       token: authenticationToken,
-      day,
       id: id!,
       substitution,
     });
@@ -123,12 +131,11 @@ export default function Dashboard(props: DashboardProps) {
     });
   };
 
-  const submitDeleteSubstitution = async (id: number | undefined) => {
+  const submitDeleteSubstitution = async (id: string | undefined) => {
     if (!id) return;
 
     const result = await API.removeSubstitution({
       token: authenticationToken,
-      day,
       id,
     });
 

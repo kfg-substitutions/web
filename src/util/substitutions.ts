@@ -1,102 +1,110 @@
-import { Substitution } from "types";
-
-// TODO save substitutions to file instead of memory
+import crypto from "crypto";
+import Document from "util/dynamoDB";
+import ERROR_CODES from "util/errorCodes";
+import { Substitution, APICallResponse } from "types";
 
 class Substitutions {
-  substitutions: Substitution[];
+  get(callback: (data: Substitution[] | APICallResponse) => void) {
+    Document.scan(
+      { TableName: process.env.AWS_DYNAMODB_TABLE, Select: "ALL_ATTRIBUTES" },
+      (err, data) => {
+        if (err)
+          return callback({
+            success: false,
+            error: ERROR_CODES.DATABASE_ERROR + err,
+          });
 
-  constructor(substitutions: Substitution[]) {
-    this.substitutions = substitutions;
+        callback(data.Items as Substitution[]);
+      }
+    );
   }
 
-  get() {
-    return this.substitutions;
-  }
+  add(substitution: Substitution, callback: (result: APICallResponse) => void) {
+    const id = crypto
+      .createHash("md5")
+      .update(String(new Date().getTime()))
+      .digest("hex");
 
-  add(substitution: Substitution) {
-    // TODO real ID generation
-    const id = Math.floor(Math.random() * 10000) + 5;
-
-    const substitutionWithID = {
+    const Item = {
       id,
       ...substitution,
     };
 
-    this.substitutions.push(substitutionWithID);
+    Document.put({ TableName: process.env.AWS_DYNAMODB_TABLE, Item }, (err) => {
+      if (err)
+        return callback({
+          success: false,
+          error: ERROR_CODES.DATABASE_ERROR + err,
+        });
 
-    return {
-      success: true,
-      message: "Sikeres hozzáadás!",
-      id,
-    };
+      return callback({
+        success: true,
+        message: "Sikeres hozzáadás!",
+        id,
+      });
+    });
   }
 
-  update(id: Number, newSubstitution: Substitution) {
-    if (!this.substitutions.find((substitution) => substitution.id === id))
-      return {
-        success: false,
-        error: "Helyettesítés ezzel az azonosítóval nem létezik.",
-      };
-
-    const index = this.substitutions.findIndex(
-      (substitution) => substitution.id === id
-    );
-
-    const substitutionWithID = {
-      id: this.substitutions[index].id,
+  update(
+    id: string,
+    newSubstitution: Substitution,
+    callback: (result: APICallResponse) => void
+  ) {
+    const Item = {
+      id,
       ...newSubstitution,
     };
 
-    this.substitutions[index] = substitutionWithID;
-
-    return {
-      success: true,
-      message: "Sikeres módosítás!",
-    };
-  }
-
-  remove(id: Number) {
-    if (!this.substitutions.find((substitution) => substitution.id === id))
-      return {
-        success: false,
-        error: "Helyettesítés ezzel az azonosítóval nem létezik.",
-      };
-
-    this.substitutions = this.substitutions.filter(
-      (substitution) => substitution.id !== id
+    // Easier Syntax than using Document.update
+    Document.delete(
+      { TableName: process.env.AWS_DYNAMODB_TABLE, Key: { id } },
+      (err) => {
+        if (err)
+          return callback({
+            success: false,
+            error: ERROR_CODES.DATABASE_ERROR + err,
+          });
+      }
     );
 
-    return {
+    // toods
+    // it does remove the old one, but doesnt create a new
+    // plus error: currently you cannot update an item that is created in the same session
+
+    Document.put({ TableName: process.env.AWS_DYNAMODB_TABLE, Item }, (err) => {
+      if (err)
+        return callback({
+          success: false,
+          error: ERROR_CODES.DATABASE_ERROR + err,
+        });
+    });
+
+    return callback({
+      success: true,
+      message: "Sikeres módosítás!",
+    });
+  }
+
+  remove(id: string, callback: (result: APICallResponse) => void) {
+    Document.delete(
+      { TableName: process.env.AWS_DYNAMODB_TABLE, Key: { id } },
+      (err) => {
+        if (err)
+          return callback({
+            success: false,
+            error: ERROR_CODES.DATABASE_ERROR + err,
+          });
+      }
+    );
+
+    return callback({
       success: true,
       message: "Sikeres törlés!",
-    };
+    });
   }
 }
 
-let todaySubstitutions = new Substitutions([
-  {
-    id: 1,
-    substitutor: "A",
-    substituted: "B",
-    hour: "1.",
-    class: "9.EK",
-    subject: "Matek",
-    room: "106",
-    note: "megjegyzés",
-  },
-  {
-    id: 2,
-    substitutor: "A",
-    substituted: "B",
-    hour: "2.",
-    class: "9.EK",
-    subject: "Matek",
-    room: "106",
-    note: "megjegyzés",
-  },
-]);
-let tomorrowSubstitutions = new Substitutions([]);
-
-export { todaySubstitutions, tomorrowSubstitutions };
+const substitutions = new Substitutions();
+export { substitutions };
 
 export default Substitutions;

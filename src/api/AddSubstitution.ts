@@ -3,12 +3,11 @@ import { AddSubstitutionProps } from "types";
 
 export default async function getSubstitution({
   token,
-  day,
   substitution,
 }: AddSubstitutionProps) {
   return Instance.post(
     "/protected/add_substitution",
-    { day, substitution },
+    { substitution },
     { headers: { "X-Auth-Token": token } }
   )
     .then((res) => res.data)

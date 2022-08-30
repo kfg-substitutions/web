@@ -1,22 +1,38 @@
 import type { NextApiRequest, NextApiResponse } from "next";
-import { todaySubstitutions, tomorrowSubstitutions } from "util/substitutions";
-import { Substitution } from "types";
+import { withSentry } from "@sentry/nextjs";
+import { substitutions } from "util/substitutions";
+import { Substitution, Day } from "types";
 
 type ResponseData = {
   success: boolean;
   error?: string;
-  token?: string;
   todaySubstitutions?: Substitution[];
   tomorrowSubstitutions?: Substitution[];
 };
 
-export default function handler(
+export default withSentry(function handler(
   req: NextApiRequest,
   res: NextApiResponse<ResponseData>
 ) {
-  res.status(200).json({
-    success: true,
-    todaySubstitutions: todaySubstitutions.get(),
-    tomorrowSubstitutions: tomorrowSubstitutions.get(),
+  return substitutions.get((allSubstitutions) => {
+    const todaySubstitutions = (
+      allSubstitutions as unknown as Substitution[]
+    ).filter((substitution) => substitution.day === Day.Today);
+    const tomorrowSubstitutions = (
+      allSubstitutions as unknown as Substitution[]
+    ).filter((substitution) => substitution.day === Day.Tomorrow);
+
+    return res.status(200).json({
+      success: true,
+      todaySubstitutions,
+      tomorrowSubstitutions,
+    });
   });
-}
+});
+
+// supress "stalled requests" error
+export const config = {
+  api: {
+    externalResolver: true,
+  },
+};

@@ -4,6 +4,7 @@ enum ERROR_CODES {
   INVALID_CREDENTIALS = "Hibás felhasználónév vagy jelszó.",
   UNAUTHORIZED = "Ehhez a forráshoz nincs jogosultságod!",
   MISSING_ARGUMENTS = "A kérésből hiányzik egy vagy több argumentum.",
+  DATABASE_ERROR = "Az adatbázishoz kapcsolódás közben hiba történt: ",
 }
 
 export default ERROR_CODES;
