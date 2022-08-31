@@ -18,7 +18,7 @@ export interface SubstitutionFormProps {
 /* Complex Data Structure Interfaces */
 export interface Substitution {
   id?: string;
-  day: Day;
+  day?: Day;
   substitutor: string;
   substituted: string;
   hour: string;

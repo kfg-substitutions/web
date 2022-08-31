@@ -37,7 +37,7 @@ class Substitutions {
           error: ERROR_CODES.DATABASE_ERROR + err,
         });
 
-      return callback({
+      callback({
         success: true,
         message: "Sikeres hozzáadás!",
         id,
@@ -50,39 +50,40 @@ class Substitutions {
     newSubstitution: Substitution,
     callback: (result: APICallResponse) => void
   ) {
-    const Item = {
-      id,
-      ...newSubstitution,
-    };
-
-    // Easier Syntax than using Document.update
-    Document.delete(
-      { TableName: process.env.AWS_DYNAMODB_TABLE, Key: { id } },
+    // _class and _hour is workaround for dynamoDB keyword preservation rule
+    Document.update(
+      {
+        TableName: process.env.AWS_DYNAMODB_TABLE,
+        Key: { id },
+        UpdateExpression:
+          "set substitutor = :substitutor, substituted = :substituted, #hour = :hour, #class = :class, subject = :subject, room = :room, note = :note",
+        ExpressionAttributeNames: {
+          "#hour": "hour",
+          "#class": "class",
+        },
+        ExpressionAttributeValues: {
+          ":substitutor": newSubstitution.substitutor,
+          ":substituted": newSubstitution.substituted,
+          ":hour": newSubstitution.hour,
+          ":class": newSubstitution.class,
+          ":subject": newSubstitution.subject,
+          ":room": newSubstitution.room,
+          ":note": newSubstitution.note,
+        },
+      },
       (err) => {
         if (err)
           return callback({
             success: false,
             error: ERROR_CODES.DATABASE_ERROR + err,
           });
+
+        callback({
+          success: true,
+          message: "Sikeres módosítás!",
+        });
       }
     );
-
-    // toods
-    // it does remove the old one, but doesnt create a new
-    // plus error: currently you cannot update an item that is created in the same session
-
-    Document.put({ TableName: process.env.AWS_DYNAMODB_TABLE, Item }, (err) => {
-      if (err)
-        return callback({
-          success: false,
-          error: ERROR_CODES.DATABASE_ERROR + err,
-        });
-    });
-
-    return callback({
-      success: true,
-      message: "Sikeres módosítás!",
-    });
   }
 
   remove(id: string, callback: (result: APICallResponse) => void) {
@@ -94,13 +95,13 @@ class Substitutions {
             success: false,
             error: ERROR_CODES.DATABASE_ERROR + err,
           });
+
+        callback({
+          success: true,
+          message: "Sikeres törlés!",
+        });
       }
     );
-
-    return callback({
-      success: true,
-      message: "Sikeres törlés!",
-    });
   }
 }
 
