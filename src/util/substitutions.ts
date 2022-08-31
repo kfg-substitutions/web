@@ -20,10 +20,7 @@ class Substitutions {
   }
 
   add(substitution: Substitution, callback: (result: APICallResponse) => void) {
-    const id = crypto
-      .createHash("md5")
-      .update(String(new Date().getTime()))
-      .digest("hex");
+    const id = crypto.randomUUID();
 
     const Item = {
       id,
