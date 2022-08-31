@@ -3,12 +3,11 @@ import { RemoveSubstitutionProps } from "types";
 
 export default async function removeSubstitution({
   token,
-  day,
   id,
 }: RemoveSubstitutionProps) {
   return Instance.post(
     "/protected/remove_substitution",
-    { day, id },
+    { id },
     { headers: { "X-Auth-Token": token } }
   )
     .then((res) => res.data)
