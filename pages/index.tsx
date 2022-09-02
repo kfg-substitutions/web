@@ -4,7 +4,7 @@ const Home: NextPage = () => {
   return (
     <>
       <main>
-        <p>hali</p>
+        <p>szia</p>
       </main>
     </>
   );

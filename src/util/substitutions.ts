@@ -22,6 +22,8 @@ class Substitutions {
   add(substitution: Substitution, callback: (result: APICallResponse) => void) {
     const id = crypto.randomUUID();
 
+    // id check until a unique is generated
+
     const Item = {
       id,
       ...substitution,
