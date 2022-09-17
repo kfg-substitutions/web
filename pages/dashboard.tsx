@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { useQuery } from "react-query";
 import { useRouter } from "next/router";
 import {
   AppShell,
@@ -8,27 +9,28 @@ import {
   Alert,
   Radio,
   Text,
+  LoadingOverlay,
 } from "@mantine/core";
 import { openModal, openConfirmModal } from "@mantine/modals";
 import { useToggle } from "@mantine/hooks";
 import { Pencil, Trash } from "tabler-icons-react";
-import { Substitution, DashboardProps, Day } from "types";
+import { Substitution, Day } from "types";
 import { Header, SubstitutionForm } from "ui";
 import { useAuthentication } from "util/authentication";
 import * as API from "api";
 
-export default function Dashboard(props: DashboardProps) {
-  const [todaySubstitutions, setTodaySubstitutions] = useState(
-    props.todaySubstitutions
+export default function Dashboard() {
+  const { data, isLoading, refetch } = useQuery(
+    "substitutions",
+    API.getSubstitutions
   );
-  const [tomorrowSubstitutions, setTomorrowSubstitutions] = useState(
-    props.tomorrowSubstitutions
-  );
+  const todaySubstitutions = data?.todaySubstitutions || [];
+  const tomorrowSubstitutions = data?.tomorrowSubstitutions || [];
 
   const router = useRouter();
   const { authenticationToken, logout } = useAuthentication();
   const [day, toggleDay] = useToggle<Day>([Day.Today, Day.Tomorrow]);
-  const [error, setError] = useState<string | undefined>(props.err);
+  const [error, setError] = useState<string | undefined>(data?.err);
 
   const displayNoSubstitutions =
     (day === Day.Today && todaySubstitutions.length <= 0) ||
@@ -59,11 +61,7 @@ export default function Dashboard(props: DashboardProps) {
     });
 
     if (result.success) {
-      const newSubstitution = { id: result.id, ...substitution };
-
-      day === Day.Today
-        ? setTodaySubstitutions([...todaySubstitutions, newSubstitution])
-        : setTomorrowSubstitutions([...tomorrowSubstitutions, newSubstitution]);
+      await refetch();
     }
 
     return result;
@@ -89,9 +87,7 @@ export default function Dashboard(props: DashboardProps) {
     id: string,
     editedSubstitution: Substitution
   ) => {
-    const { /*id, */ ...substitution } = editedSubstitution;
-
-    console.log(id, ":", substitution);
+    const { id: _id, ...substitution } = editedSubstitution;
 
     const result = await API.editSubstitution({
       token: authenticationToken,
@@ -100,17 +96,7 @@ export default function Dashboard(props: DashboardProps) {
     });
 
     if (result.success) {
-      day === Day.Today
-        ? setTodaySubstitutions(
-            todaySubstitutions.map((substitution) =>
-              substitution.id === id ? editedSubstitution : substitution
-            )
-          )
-        : setTomorrowSubstitutions(
-            tomorrowSubstitutions.map((substitution) =>
-              substitution.id === id ? editedSubstitution : substitution
-            )
-          );
+      await refetch();
     }
 
     return result;
@@ -141,13 +127,7 @@ export default function Dashboard(props: DashboardProps) {
 
     if (!result.success) return setError(result.error);
 
-    day === Day.Today
-      ? setTodaySubstitutions(
-          todaySubstitutions.filter((substitution) => substitution.id !== id)
-        )
-      : setTomorrowSubstitutions(
-          tomorrowSubstitutions.filter((substitution) => substitution.id !== id)
-        );
+    await refetch();
   };
 
   useEffect(() => {
@@ -200,6 +180,8 @@ export default function Dashboard(props: DashboardProps) {
         },
       })}
     >
+      <LoadingOverlay visible={isLoading} overlayBlur={2} />
+
       <Box px="xl">
         {displayNoSubstitutions && (
           <Box py="md">
@@ -270,16 +252,4 @@ export default function Dashboard(props: DashboardProps) {
       </Box>
     </AppShell>
   );
-}
-
-export async function getServerSideProps() {
-  const result = await API.getSubstitutions();
-
-  return {
-    props: {
-      todaySubstitutions: result.success ? result.todaySubstitutions : [],
-      tomorrowSubstitutions: result.success ? result.tomorrowSubstitutions : [],
-      err: !result.success && result.error,
-    },
-  };
 }

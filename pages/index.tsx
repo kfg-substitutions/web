@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { useQuery } from "react-query";
 import {
   Container,
@@ -5,22 +6,36 @@ import {
   Group,
   Image,
   Text,
-  ActionIcon,
+  Button,
   Box,
+  LoadingOverlay,
 } from "@mantine/core";
-import { SubstitutionCard } from "ui";
+import { useToggle } from "@mantine/hooks";
 import * as API from "api";
+import { SubstitutionCard } from "ui";
+import { Day, Substitution } from "types";
+import CLASS_OPTIONS from "util/classes";
 
 export default function Home() {
-  const { data, isLoading, error } = useQuery(
-    "substitutions",
-    API.getSubstitutions
-  );
+  const [selectedDay, toggleSelectedDay] = useToggle([Day.Today, Day.Tomorrow]);
+  const [selectedClass, setSelectedClass] = useState<string | null>();
+  const { data, isLoading } = useQuery("substitutions", API.getSubstitutions);
 
-  console.log(isLoading, error, data);
+  const substitutionsToShow = (
+    (selectedDay === Day.Today
+      ? data?.todaySubstitutions
+      : data?.tomorrowSubstitutions) ?? []
+  ).filter(
+    (substitution: Substitution) =>
+      !selectedClass ||
+      selectedClass === "Minden helyettesítés" ||
+      substitution.class === selectedClass
+  );
 
   return (
     <>
+      <LoadingOverlay visible={isLoading} overlayBlur={2} />
+
       <header>
         <Container size="xl" py="lg">
           <Group position="center">
@@ -34,40 +49,31 @@ export default function Home() {
 
       <main>
         <Container p="sm">
-          <Group sx={{ marginBottom: 20 }}>
-            <Select
-              data={["9A", "9B", "9C", "9D", "9E"]}
-              label="Válaszd ki, melyik osztály helyettesítései érdekelnek!"
-              placeholder="Pl. 9.AK"
-              onChange={() => {}}
-              value={""}
-            />
-
-            <ActionIcon variant="outline" onClick={() => {}}>
-              {">"}
-            </ActionIcon>
+          <Group position="center">
+            <Button variant="outline" onClick={() => toggleSelectedDay()}>
+              {selectedDay === Day.Today ? "Következő nap" : "Mai nap"}
+            </Button>
           </Group>
 
-          <SubstitutionCard
-            key={1}
-            substitutor="John Doe"
-            substituted="John Doe"
-            hour="6"
-            class="8.A"
-            subject="Matek"
-            room="102"
-            note="hazamehet"
-          />
-          <SubstitutionCard
-            key={2}
-            substitutor="John Doe"
-            substituted="John Doe"
-            hour="6"
-            class="8.A"
-            subject="Matek"
-            room="102"
-            note="hazamehet"
-          />
+          <Box sx={{ marginBottom: 20 }}>
+            <Select
+              data={["Minden helyettesítés"].concat(CLASS_OPTIONS)}
+              label="Válaszd ki, melyik osztály helyettesítései érdekelnek!"
+              placeholder="Pl. 9.AK"
+              onChange={setSelectedClass}
+              value={selectedClass}
+            />
+          </Box>
+
+          {!substitutionsToShow.length && (
+            <Text size="xl" align="center">
+              Nincs helyettesítés!
+            </Text>
+          )}
+
+          {substitutionsToShow.map((substitution: Substitution) => (
+            <SubstitutionCard key={substitution.id} {...substitution} />
+          ))}
         </Container>
       </main>
     </>
