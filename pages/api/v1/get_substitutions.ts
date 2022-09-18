@@ -17,11 +17,11 @@ export default withSentry(function handler(
   return res.status(200).json({
     success: true,
     info: [
-      process.env.NEXT_PUBLIC_STAGE,
-      process.env.AWS_REGION,
-      process.env.AWS_ACCESS_KEY_ID,
-      process.env.AWS_SECRET_ACCESS_KEY,
-      process.env.AWS_DYNAMODB_TABLE,
+      process.env.APP_NEXT_PUBLIC_STAGE,
+      process.env.APP_AWS_REGION,
+      process.env.APP_AWS_ACCESS_KEY_ID,
+      process.env.APP_AWS_SECRET_ACCESS_KEY,
+      process.env.APP_AWS_DYNAMODB_TABLE,
       process.env.ADMIN_LOGIN_EMAIL,
       process.env.ADMIN_LOGIN_PASSWORD,
       process.env.ADMIN_LOGIN_TOKEN,
