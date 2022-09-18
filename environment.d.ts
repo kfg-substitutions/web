@@ -2,16 +2,15 @@ declare global {
   namespace NodeJS {
     interface ProcessEnv {
       // Public
-      NEXT_PUBLIC_STAGE: "DEV" | "LIVE";
-      NEXT_PUBLIC_API_BASE_URL: string;
+      NEXT_PUBLIC_APP_STAGE: "DEV" | "LIVE";
 
       // AWS Credentials
-      AWS_REGION: string;
-      AWS_ACCESS_KEY_ID: string;
-      AWS_SECRET_ACCESS_KEY: string;
+      APP_AWS_REGION: string;
+      APP_AWS_ACCESS_KEY_ID: string;
+      APP_AWS_SECRET_ACCESS_KEY: string;
 
       // AWS DynamoDB
-      AWS_DYNAMODB_TABLE: string;
+      APP_AWS_DYNAMODB_TABLE: string;
 
       // Administration
       ADMIN_LOGIN_EMAIL: string;

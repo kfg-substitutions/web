@@ -6,7 +6,10 @@ import { Substitution, APICallResponse } from "types";
 class Substitutions {
   get(callback: (data: APICallResponse) => void) {
     Document.scan(
-      { TableName: process.env.AWS_DYNAMODB_TABLE, Select: "ALL_ATTRIBUTES" },
+      {
+        TableName: process.env.APP_AWS_DYNAMODB_TABLE,
+        Select: "ALL_ATTRIBUTES",
+      },
       (err, data) => {
         if (err)
           return callback({
@@ -29,19 +32,22 @@ class Substitutions {
       ...substitution,
     };
 
-    Document.put({ TableName: process.env.AWS_DYNAMODB_TABLE, Item }, (err) => {
-      if (err)
-        return callback({
-          success: false,
-          error: ERROR_CODES.DATABASE_ERROR + err,
-        });
+    Document.put(
+      { TableName: process.env.APP_AWS_DYNAMODB_TABLE, Item },
+      (err) => {
+        if (err)
+          return callback({
+            success: false,
+            error: ERROR_CODES.DATABASE_ERROR + err,
+          });
 
-      callback({
-        success: true,
-        message: "Sikeres hozzáadás!",
-        id,
-      });
-    });
+        callback({
+          success: true,
+          message: "Sikeres hozzáadás!",
+          id,
+        });
+      }
+    );
   }
 
   update(
@@ -52,7 +58,7 @@ class Substitutions {
     // _class and _hour is workaround for dynamoDB keyword preservation rule
     Document.update(
       {
-        TableName: process.env.AWS_DYNAMODB_TABLE,
+        TableName: process.env.APP_AWS_DYNAMODB_TABLE,
         Key: { id },
         UpdateExpression:
           "set substitutor = :substitutor, substituted = :substituted, #hour = :hour, #class = :class, subject = :subject, room = :room, note = :note",
@@ -87,7 +93,7 @@ class Substitutions {
 
   remove(id: string, callback: (result: APICallResponse) => void) {
     Document.delete(
-      { TableName: process.env.AWS_DYNAMODB_TABLE, Key: { id } },
+      { TableName: process.env.APP_AWS_DYNAMODB_TABLE, Key: { id } },
       (err) => {
         if (err)
           return callback({
