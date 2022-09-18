@@ -12,7 +12,7 @@ type ResponseData = {
 
 export default withSentry(function handler(
   req: NextApiRequest,
-  res: NextApiResponse<ResponseData>
+  res: NextApiResponse<any>
 ) {
   return res.status(200).json({
     success: true,
