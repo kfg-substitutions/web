@@ -14,16 +14,6 @@ export default withSentry(function handler(
   req: NextApiRequest,
   res: NextApiResponse<any>
 ) {
-  return res.status(200).json({
-    success: true,
-    info: {
-      table: process.env.AWS_DYNAMODB_TABLE,
-      stage: process.env.NEXT_PUBLIC_STAGE,
-      url: process.env.NEXT_PUBLIC_API_BASE_URL,
-      env: process.env,
-    },
-  });
-
   return substitutions.get((allSubstitutions: APICallResponse) => {
     if (!allSubstitutions.success)
       return res.status(200).json({
