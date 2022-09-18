@@ -15,12 +15,12 @@ export default withSentry(function handler(
   res: NextApiResponse<ResponseData>
 ) {
   return substitutions.get((allSubstitutions) => {
-    const todaySubstitutions = (
-      allSubstitutions as unknown as Substitution[]
-    ).filter((substitution) => substitution.day === Day.Today);
-    const tomorrowSubstitutions = (
-      allSubstitutions as unknown as Substitution[]
-    ).filter((substitution) => substitution.day === Day.Tomorrow);
+    const todaySubstitutions = (allSubstitutions as Substitution[])?.filter(
+      (substitution) => substitution.day === Day.Today
+    );
+    const tomorrowSubstitutions = (allSubstitutions as Substitution[])?.filter(
+      (substitution) => substitution.day === Day.Tomorrow
+    );
 
     return res.status(200).json({
       success: true,
