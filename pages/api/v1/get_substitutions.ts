@@ -20,7 +20,7 @@ export default withSentry(function handler(
       process.env.APP_NEXT_PUBLIC_APP_STAGE,
       process.env.VERCEL_URL,
       process.env.APP_NEXT_PUBLIC_APP_STAGE == "LIVE"
-        ? process.env.VERCEL_URL + "/api/v1"
+        ? "https://" + process.env.VERCEL_URL + "/api/v1"
         : "http://localhost:3000/api/v1",
     ],
   });
