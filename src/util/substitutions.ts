@@ -4,7 +4,7 @@ import ERROR_CODES from "util/errorCodes";
 import { Substitution, APICallResponse } from "types";
 
 class Substitutions {
-  get(callback: (data: Substitution[] | APICallResponse) => void) {
+  get(callback: (data: APICallResponse) => void) {
     Document.scan(
       { TableName: process.env.AWS_DYNAMODB_TABLE, Select: "ALL_ATTRIBUTES" },
       (err, data) => {
@@ -14,7 +14,7 @@ class Substitutions {
             error: ERROR_CODES.DATABASE_ERROR + err,
           });
 
-        callback(data.Items as Substitution[]);
+        callback({ success: true, message: data.Items as Substitution[] });
       }
     );
   }
