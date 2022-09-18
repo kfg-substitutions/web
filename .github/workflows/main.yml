@@ -9,6 +9,8 @@ jobs:
   deploy:
     name: "Deploy application"
 
+    if: "!contains(github.event.head_commit.message, '[skip ci]')"
+
     runs-on: ubuntu-latest
 
     strategy:
@@ -28,15 +30,11 @@ jobs:
           BUILD_ENV: |
             NEXT_PUBLIC_STAGE="LIVE"
             NEXT_PUBLIC_API_BASE_URL="${{ secrets.ENV_NEXT_PUBLIC_API_BASE_URL }}"
-
             AWS_REGION="eu-central-1"
             AWS_ACCESS_KEY_ID="${{ secrets.ENV_AWS_ACCESS_KEY_ID }}"
             AWS_SECRET_ACCESS_KEY="${{ secrets.ENV_AWS_SECRET_ACCESS_KEY }}"
-
             AWS_DYNAMODB_TABLE="substitutions-live"
-
             ADMIN_LOGIN_EMAIL="${{ secrets.ENV_ADMIN_LOGIN_EMAIL }}"
             ADMIN_LOGIN_PASSWORD="${{ secrets.ENV_ADMIN_LOGIN_PASSWORD }}"
             ADMIN_LOGIN_TOKEN="${{ secrets.ENV_ADMIN_LOGIN_TOKEN }}"
-
             SENTRY_IGNORE_API_RESOLUTION_ERROR="1"
