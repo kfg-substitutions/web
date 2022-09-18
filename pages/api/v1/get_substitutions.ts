@@ -15,7 +15,7 @@ export default withSentry(function handler(
   res: NextApiResponse<ResponseData>
 ) {
   return substitutions.get((allSubstitutions: APICallResponse) => {
-    if (allSubstitutions.success)
+    if (!allSubstitutions.success)
       return res.status(200).json({
         success: true,
         error: allSubstitutions.error,
