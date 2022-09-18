@@ -14,6 +14,17 @@ export default withSentry(function handler(
   req: NextApiRequest,
   res: NextApiResponse<any>
 ) {
+  return res.status(200).json({
+    success: true,
+    info: [
+      process.env.APP_NEXT_PUBLIC_APP_STAGE,
+      process.env.VERCEL_URL,
+      process.env.APP_NEXT_PUBLIC_APP_STAGE == "LIVE"
+        ? process.env.VERCEL_URL + "/api/v1"
+        : "http://localhost:3000/api/v1",
+    ],
+  });
+
   return substitutions.get((allSubstitutions: APICallResponse) => {
     if (!allSubstitutions.success)
       return res.status(200).json({

@@ -2,7 +2,7 @@ declare global {
   namespace NodeJS {
     interface ProcessEnv {
       // Public
-      NEXT_PUBLIC_APP_STAGE: "DEV" | "LIVE";
+      APP_NEXT_PUBLIC_APP_STAGE: "DEV" | "LIVE";
 
       // AWS Credentials
       APP_AWS_REGION: string;
