@@ -1,7 +1,7 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 import { withSentry } from "@sentry/nextjs";
 import { substitutions } from "util/substitutions";
-import { Substitution, Day } from "types";
+import { APICallResponse, Substitution, Day } from "types";
 
 type ResponseData = {
   success: boolean;
@@ -12,15 +12,21 @@ type ResponseData = {
 
 export default withSentry(function handler(
   req: NextApiRequest,
-  res: NextApiResponse<ResponseData>
+  res: NextApiResponse<any>
 ) {
-  return substitutions.get((allSubstitutions) => {
+  return substitutions.get((allSubstitutions: APICallResponse) => {
+    if (!allSubstitutions.success)
+      return res.status(200).json({
+        success: true,
+        error: allSubstitutions.error,
+      });
+
     const todaySubstitutions = (
-      allSubstitutions as unknown as Substitution[]
-    ).filter((substitution) => substitution.day === Day.Today);
+      (allSubstitutions.message as Substitution[]) || []
+    )?.filter((substitution) => substitution.day === Day.Today);
     const tomorrowSubstitutions = (
-      allSubstitutions as unknown as Substitution[]
-    ).filter((substitution) => substitution.day === Day.Tomorrow);
+      (allSubstitutions.message as Substitution[]) || []
+    )?.filter((substitution) => substitution.day === Day.Tomorrow);
 
     return res.status(200).json({
       success: true,

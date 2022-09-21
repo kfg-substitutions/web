@@ -58,7 +58,7 @@ export interface RemoveSubstitutionProps extends ProtectedRouteProps {
 
 export interface APICallResponse {
   success: boolean;
-  message?: string;
+  message?: any;
   error?: string;
   id?: string;
 }

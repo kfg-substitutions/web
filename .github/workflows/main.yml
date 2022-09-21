@@ -1,4 +1,4 @@
-name: Heroku Deploy CI
+name: Vercel Deploy CI
 
 on:
   push:
@@ -7,7 +7,9 @@ on:
 
 jobs:
   deploy:
-    name: Deploy to Heroku
+    name: "Deploy application"
+
+    if: "!contains(github.event.head_commit.message, '[skip ci]')"
 
     runs-on: ubuntu-latest
 
@@ -18,24 +20,10 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
-      - uses: akhileshns/heroku-deploy@v3.12.12
+      - name: Deploy to Vercel Action
+        uses: BetaHuhn/deploy-to-vercel-action@v1
         with:
-          heroku_api_key: ${{secrets.HEROKU_API_KEY}}
-          heroku_app_name: kfg-substitutions-demo
-          heroku_email: ${{secrets.HEROKU_EMAIL}}
-          branch: main
-        env:
-          HD_NEXT_PUBLIC_STAGE: "LIVE"
-          HD_NEXT_PUBLIC_API_BASE_URL: ${{secrets.ENV_NEXT_PUBLIC_API_BASE_URL}}
-
-          HD_AWS_REGION: "eu-central-1"
-          HD_AWS_ACCESS_KEY_ID: ${{secrets.ENV_AWS_ACCESS_KEY_ID}}
-          HD_AWS_SECRET_ACCESS_KEY: ${{secrets.ENV_AWS_SECRET_ACCESS_KEY}}
-
-          HD_AWS_DYNAMODB_TABLE: "substitutions-live"
-
-          HD_ADMIN_LOGIN_EMAIL: ${{secrets.ENV_ADMIN_LOGIN_EMAIL}}
-          HD_ADMIN_LOGIN_PASSWORD: ${{secrets.ENV_ADMIN_LOGIN_PASSWORD}}
-          HD_ADMIN_LOGIN_TOKEN: ${{secrets.ENV_ADMIN_LOGIN_TOKEN}}
-
-          SENTRY_IGNORE_API_RESOLUTION_ERROR: 1
+          GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
+          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+          VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+          VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}

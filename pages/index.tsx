@@ -17,9 +17,11 @@ import { Day, Substitution } from "types";
 import CLASS_OPTIONS from "util/classes";
 
 export default function Home() {
+  const { data, isLoading } = useQuery("substitutions", API.getSubstitutions, {
+    refetchInterval: 1000 * 60 * 5,
+  });
   const [selectedDay, toggleSelectedDay] = useToggle([Day.Today, Day.Tomorrow]);
   const [selectedClass, setSelectedClass] = useState<string | null>();
-  const { data, isLoading } = useQuery("substitutions", API.getSubstitutions);
 
   const substitutionsToShow = (
     (selectedDay === Day.Today

@@ -22,7 +22,10 @@ import * as API from "api";
 export default function Dashboard() {
   const { data, isLoading, refetch } = useQuery(
     "substitutions",
-    API.getSubstitutions
+    API.getSubstitutions,
+    {
+      refetchInterval: 1000 * 60 * 5,
+    }
   );
   const todaySubstitutions = data?.todaySubstitutions || [];
   const tomorrowSubstitutions = data?.tomorrowSubstitutions || [];
