@@ -3,6 +3,7 @@ declare global {
     interface ProcessEnv {
       // Public
       NEXT_PUBLIC_APP_STAGE: "DEV" | "LIVE";
+      NEXT_PUBLIC_API_GATEWAY: string;
 
       // AWS Credentials
       APP_AWS_REGION: string;
