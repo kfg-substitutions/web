@@ -1,5 +1,8 @@
 Things I might do in the future:
 
+- currently waiting for my AWS account to be unsuspened
+- useSubstitutions hook
+- organize utils better
 - use a state management library
 - refetch state in admin after mutations - DONE
 - react-query for data fetching - DONE
