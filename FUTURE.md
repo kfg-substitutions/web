@@ -1,6 +1,7 @@
 Things I might do in the future:
 
 - mobile app
+- SOS: add group permissions instead of root access
 - currently waiting for my AWS account to be unsuspened - DONE (unsuspended)
 - useSubstitutions hook
 - organize utils better

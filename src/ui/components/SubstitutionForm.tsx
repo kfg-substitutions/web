@@ -6,6 +6,7 @@ import {
   Stack,
   Alert,
   LoadingOverlay,
+  Select,
 } from "@mantine/core";
 import { useForm } from "@mantine/form";
 import { closeAllModals } from "@mantine/modals";
@@ -15,6 +16,7 @@ import {
   startNavigationProgress,
 } from "@mantine/nprogress";
 import { Substitution, SubstitutionFormProps } from "types";
+import CLASS_OPTIONS from "util/classes";
 
 const getInitialValues = (substitution?: Substitution) => ({
   substitutor: substitution?.substitutor || "",
@@ -104,13 +106,13 @@ export default function SubstitutionForm(props: SubstitutionFormProps) {
             error={form.errors.hour}
           />
 
-          <TextInput
-            required
+          <Select
+            data={CLASS_OPTIONS}
             label="Osztály"
-            placeholder="9.EK"
+            placeholder="Pl. 9.AK"
             value={form.values.class}
-            onChange={(event) =>
-              form.setFieldValue("class", event.currentTarget.value)
+            onChange={(selection) =>
+              form.setFieldValue("class", selection ?? "")
             }
             error={form.errors.class}
           />

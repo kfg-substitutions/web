@@ -2,6 +2,7 @@
 const CLASS_OPTIONS = [
   "9.AK",
   "9.BK",
+  "9.CK",
   "9.EK",
   "9.A",
   "9.B",
@@ -18,11 +19,13 @@ const CLASS_OPTIONS = [
   "11.C",
   "11.D",
   "11.E",
+  "11.IB",
   "12.A",
   "12.B",
   "12.C",
   "12.D",
   "12.E",
+  "12.IB",
 ];
 
 export default CLASS_OPTIONS;
