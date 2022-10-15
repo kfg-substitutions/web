@@ -1,4 +1,4 @@
-> Also, this is work in progres and there is no place to host this. :(
+> Also, this is work in progress and there is no place to host this. :(
 
 ## KFG Substitutions
 
